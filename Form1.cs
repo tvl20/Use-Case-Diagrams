@@ -14,6 +14,31 @@ namespace Use_Case_DiagramApp
     {
         public List<Actor> actlist = new List<Actor>();
 
+        public void Draw()
+        {
+            Graphics graphics = Pn_useCase.CreateGraphics();
+            Pen p = new Pen(Color.Black);
+            foreach (Actor a in actlist)
+            {
+                string lbltxt = a.Name;
+                if (lbltxt == null)
+                {
+                    lbltxt = "ActorID: " + Convert.ToString(a.Id);
+                }
+
+                if (a.Selected)
+                    p.Color = Color.Red;
+
+                graphics.DrawEllipse(p, a.X - 10, a.Y - 30, 20, 20);
+                graphics.DrawLine(p, a.X, a.Y - 10, a.X, a.Y + 20);
+                graphics.DrawLine(p, a.X - 15, a.Y, a.X + 15, a.Y);
+                graphics.DrawLine(p, a.X, a.Y + 20, a.X - 15, a.Y + 35);
+                graphics.DrawLine(p, a.X, a.Y + 20, a.X + 15, a.Y + 35);
+
+                //graphics.DrawEllipse(p, a.X - 5, a.Y - 5, 10, 10);
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -23,7 +48,8 @@ namespace Use_Case_DiagramApp
 
         private void Pn_useCase_MouseClick(object sender, MouseEventArgs e)
         {
-            tb_Actor_Name.Clear();
+            Graphics graphics = Pn_useCase.CreateGraphics();
+            Point point = Pn_useCase.PointToClient(Cursor.Position);
             int drawmode = 0;
             if (rbtn_actor.Checked)
             {
@@ -49,30 +75,26 @@ namespace Use_Case_DiagramApp
 
                     case 1: //draw actor
                         //actor
-                        Point point = Pn_useCase.PointToClient(Cursor.Position);
                         string str = tb_Actor_Name.Text;
                         if (str.Length < 1)
                         {
                             str = "Actor";
                         }
-                        Actor a = new Actor(str, point.X, point.Y);
 
+                        Actor a = new Actor(str, point.X, point.Y);
                         actlist.Add(a);
-                        MessageBox.Show(Convert.ToString(point.X) + ", " + Convert.ToString(point.Y));
+                        //MessageBox.Show(Convert.ToString(point.X) + ", " + Convert.ToString(point.Y)); --debug
 
                         Label label = new Label();
                         label.Name = Convert.ToString(a.Id);
-                        label.Location = new Point(a.X - label.Width/2, a.Y + 40);
-                        //label.BackColor = Color.Red;
                         label.Text = a.Name;
+
+                        var stringFont = new Font("Ariel", 10);
+                        var lblwidth = graphics.MeasureString(label.Text, stringFont).Width;
+                        label.Location = new Point(a.X - (Convert.ToInt32(lblwidth) / 2), a.Y + 40);
+                        label.AutoSize = true;
+                        //label.BackColor = Color.Red; --debug
                         Pn_useCase.Controls.Add(label);
-
-
-                        //label
-
-
-
-
                         break;
 
                     case 2: //draw use case
@@ -84,7 +106,17 @@ namespace Use_Case_DiagramApp
                         break;
                 }
             }
+
+            if (rbtn_modesSelect.Checked)
+            {
+                foreach (Actor a in actlist)
+                {
+                    
+                }
+            }
+
             Pn_useCase.Refresh();
+            tb_Actor_Name.Clear();
         }
 
         private void Pn_useCase_MouseMove(object sender, MouseEventArgs e)
@@ -96,22 +128,7 @@ namespace Use_Case_DiagramApp
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Graphics graphics = Pn_useCase.CreateGraphics();
-            Pen p = new Pen(Color.Black);
-            foreach (Actor a in actlist)
-            {
-                string lbltxt = a.Name;
-                if (lbltxt == null)
-                {
-                    lbltxt = "ActorID: " + Convert.ToString(a.Id);
-                }
-                
-                graphics.DrawEllipse(p, a.X - 10, a.Y - 30, 20, 20);
-                graphics.DrawLine(p, a.X, a.Y - 10, a.X, a.Y + 20);
-                graphics.DrawLine(p, a.X - 15, a.Y, a.X + 15, a.Y);
-                graphics.DrawLine(p, a.X, a.Y + 20, a.X - 15, a.Y + 35);
-                graphics.DrawLine(p, a.X, a.Y + 20, a.X + 15, a.Y + 35);
-            }
+            Draw();
         }
     }
 }
