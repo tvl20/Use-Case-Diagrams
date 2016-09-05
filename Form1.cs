@@ -13,7 +13,8 @@ namespace Use_Case_DiagramApp
     public partial class Form1 : Form
     {
         public List<Actor> actlist = new List<Actor>();
-
+        public List<Label> lbllist = new List<Label>();
+        
         public Form1()
         {
             InitializeComponent();
@@ -49,7 +50,9 @@ namespace Use_Case_DiagramApp
                         break;
 
                     case 1: //draw actor
-                        //ensure name actor
+                        //ensure empty space
+
+                        //ensure actor has a name
                         string str = tb_Actor_Name.Text;
                         if (str.Length < 1)
                         {
@@ -74,6 +77,7 @@ namespace Use_Case_DiagramApp
 
                         //add label
                         Pn_useCase.Controls.Add(label);
+                        lbllist.Add(label);
                         break;
 
                     case 2: //draw use case
@@ -88,9 +92,36 @@ namespace Use_Case_DiagramApp
 
             if (rbtn_modesSelect.Checked)
             {
+                //links boven -actor {x-15 y-30}
+                //rechts onder -actor {x+15 y+35}
                 foreach (Actor a in actlist)
                 {
-                    
+                    if ((point.X > a.X - 16 && point.Y > a.Y - 31) && (point.X < a.X + 16 && point.Y < a.Y + 35))
+                    {
+                        a.Selected = true;
+
+                        //change color of label
+                        foreach(Label l in lbllist)
+                        {
+                            if (l.Name == Convert.ToString(a.Id))
+                            {
+                                l.ForeColor = Color.Red;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        a.Selected = false;
+
+                        //change color of label
+                        foreach (Label l in lbllist)
+                        {
+                            if (l.Name == Convert.ToString(a.Id))
+                            {
+                                l.ForeColor = Color.Black;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -107,11 +138,6 @@ namespace Use_Case_DiagramApp
             Point point = Pn_useCase.PointToClient(Cursor.Position);
             label1.Text = Convert.ToString(point.X);
             label2.Text = Convert.ToString(point.Y);
-        }
-
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            
         }
     }
 }
