@@ -154,5 +154,44 @@ namespace Use_Case_DiagramApp
             Pn_useCase.Controls.Clear();
             Pn_useCase.Refresh();
         }
+
+        private void btn_remove_Click(object sender, EventArgs e)
+        {
+            //check of en welke actor selected is
+            bool actorSelected = false;
+            int actorID = -1;
+            int actorPos = 0;
+            int counter = 0;
+            foreach (Actor a in actlist)
+            {
+                if (a.Selected)
+                {
+                    actorSelected = true;
+                    actorID = a.Id;
+                    actorPos = counter;
+                }
+                counter++;
+            }
+
+            if (actorSelected && actorID != -1)
+            {
+                //remove label op bepaalde positie
+                for (int i = 0; i <= lbllist.Count-1; i++)
+                    if (lbllist[i].Name == Convert.ToString(actorID))
+                    {
+                        Pn_useCase.Controls.Remove(lbllist[i]);
+                        lbllist.RemoveAt(i);
+                        i--;
+                    }
+
+                //remove actor
+                actlist.RemoveAt(actorPos);
+            }
+
+            //re-draw panel
+            Pn_useCase.Refresh();
+            foreach (Actor a in actlist)
+                a.Draw();
+        }
     }
 }
