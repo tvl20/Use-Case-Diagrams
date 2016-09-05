@@ -14,31 +14,6 @@ namespace Use_Case_DiagramApp
     {
         public List<Actor> actlist = new List<Actor>();
 
-        public void Draw()
-        {
-            Graphics graphics = Pn_useCase.CreateGraphics();
-            Pen p = new Pen(Color.Black);
-            foreach (Actor a in actlist)
-            {
-                string lbltxt = a.Name;
-                if (lbltxt == null)
-                {
-                    lbltxt = "ActorID: " + Convert.ToString(a.Id);
-                }
-
-                if (a.Selected)
-                    p.Color = Color.Red;
-
-                graphics.DrawEllipse(p, a.X - 10, a.Y - 30, 20, 20);
-                graphics.DrawLine(p, a.X, a.Y - 10, a.X, a.Y + 20);
-                graphics.DrawLine(p, a.X - 15, a.Y, a.X + 15, a.Y);
-                graphics.DrawLine(p, a.X, a.Y + 20, a.X - 15, a.Y + 35);
-                graphics.DrawLine(p, a.X, a.Y + 20, a.X + 15, a.Y + 35);
-
-                //graphics.DrawEllipse(p, a.X - 5, a.Y - 5, 10, 10);
-            }
-        }
-
         public Form1()
         {
             InitializeComponent();
@@ -74,26 +49,30 @@ namespace Use_Case_DiagramApp
                         break;
 
                     case 1: //draw actor
-                        //actor
+                        //ensure name actor
                         string str = tb_Actor_Name.Text;
                         if (str.Length < 1)
                         {
                             str = "Actor";
                         }
 
-                        Actor a = new Actor(str, point.X, point.Y);
+                        //create actor
+                        Actor a = new Actor(str, point.X, point.Y, Pn_useCase);
                         actlist.Add(a);
-                        //MessageBox.Show(Convert.ToString(point.X) + ", " + Convert.ToString(point.Y)); --debug
+                        
 
+                        //create label
                         Label label = new Label();
                         label.Name = Convert.ToString(a.Id);
                         label.Text = a.Name;
 
+                        //position label
                         var stringFont = new Font("Ariel", 10);
                         var lblwidth = graphics.MeasureString(label.Text, stringFont).Width;
                         label.Location = new Point(a.X - (Convert.ToInt32(lblwidth) / 2), a.Y + 40);
                         label.AutoSize = true;
-                        //label.BackColor = Color.Red; --debug
+
+                        //add label
                         Pn_useCase.Controls.Add(label);
                         break;
 
@@ -116,6 +95,10 @@ namespace Use_Case_DiagramApp
             }
 
             Pn_useCase.Refresh();
+            foreach (Actor a in actlist)
+            {
+                a.Draw();
+            }
             tb_Actor_Name.Clear();
         }
 
@@ -128,7 +111,7 @@ namespace Use_Case_DiagramApp
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Draw();
+            
         }
     }
 }
