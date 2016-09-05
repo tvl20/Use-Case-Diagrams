@@ -50,10 +50,17 @@ namespace Use_Case_DiagramApp
                         break;
 
                     case 1: //draw actor
-                        //ensure empty space
+                            //ensure empty space
+                        bool occupied = false;
+                        foreach (Actor act in actlist)
+                            if ((point.X > act.X - 32 && point.Y > act.Y - 85) && (point.X < act.X + 32 && point.Y < act.Y + 85))
+                                occupied = true;
 
-                        //ensure actor has a name
-                        string str = tb_Actor_Name.Text;
+                        if (occupied)
+                            break;
+
+                            //ensure actor has a name
+                            string str = tb_Actor_Name.Text;
                         if (str.Length < 1)
                         {
                             str = "Actor";
@@ -96,7 +103,7 @@ namespace Use_Case_DiagramApp
                 //rechts onder -actor {x+15 y+35}
                 foreach (Actor a in actlist)
                 {
-                    if ((point.X > a.X - 16 && point.Y > a.Y - 31) && (point.X < a.X + 16 && point.Y < a.Y + 35))
+                    if ((point.X > a.X - 16 && point.Y > a.Y - 31) && (point.X < a.X + 16 && point.Y < a.Y + 36))
                     {
                         a.Selected = true;
 
@@ -138,6 +145,14 @@ namespace Use_Case_DiagramApp
             Point point = Pn_useCase.PointToClient(Cursor.Position);
             label1.Text = Convert.ToString(point.X);
             label2.Text = Convert.ToString(point.Y);
+        }
+
+        private void btn_clearAll_Click(object sender, EventArgs e)
+        {
+            lbllist.Clear();
+            actlist.Clear();
+            Pn_useCase.Controls.Clear();
+            Pn_useCase.Refresh();
         }
     }
 }

@@ -141,6 +141,7 @@
             this.btn_clearAll.TabIndex = 4;
             this.btn_clearAll.Text = "Clear all";
             this.btn_clearAll.UseVisualStyleBackColor = true;
+            this.btn_clearAll.Click += new System.EventHandler(this.btn_clearAll_Click);
             // 
             // btn_remove
             // 
