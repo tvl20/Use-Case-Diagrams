@@ -13,8 +13,10 @@ namespace Use_Case_DiagramApp
     public partial class Form1 : Form
     {
         public List<Actor> actlist = new List<Actor>();
-        public List<Label> lbllist = new List<Label>();
-        
+        public List<UseCase> uselist = new List<UseCase>();
+        public List<Label> lblactorlist = new List<Label>();
+        public List<Label> lbluselist = new List<Label>();
+
         public Form1()
         {
             InitializeComponent();
@@ -51,6 +53,10 @@ namespace Use_Case_DiagramApp
 
                     case 1: //draw actor
                             //ensure empty space
+
+
+                        //code below needs re-write
+                        /*---------------------
                         bool occupied = false;
                         foreach (Actor act in actlist)
                             if ((point.X > act.X - 32 && point.Y > act.Y - 85) && (point.X < act.X + 32 && point.Y < act.Y + 85))
@@ -58,25 +64,23 @@ namespace Use_Case_DiagramApp
 
                         if (occupied)
                             break;
+                        ---------------------*/
 
-                            //ensure actor has a name
-                            string str = tb_Actor_Name.Text;
+                        //ensure actor has a name
+                        string str = tb_Actor_Name.Text;
                         if (str.Length < 1)
-                        {
                             str = "Actor";
-                        }
 
                         //create actor
                         Actor a = new Actor(str, point.X, point.Y, Pn_useCase);
                         actlist.Add(a);
-                        
 
                         //create label
                         Label label = new Label();
-                        label.Name = Convert.ToString(a.Id);
+                        label.Name = "a" + Convert.ToString(a.Id);
                         label.Text = a.Name;
 
-                        //position label
+                        //label positioning
                         var stringFont = new Font("Ariel", 10);
                         var lblwidth = graphics.MeasureString(label.Text, stringFont).Width;
                         label.Location = new Point(a.X - (Convert.ToInt32(lblwidth) / 2), a.Y + 40);
@@ -84,11 +88,33 @@ namespace Use_Case_DiagramApp
 
                         //add label
                         Pn_useCase.Controls.Add(label);
-                        lbllist.Add(label);
+                        lblactorlist.Add(label);
                         break;
 
                     case 2: //draw use case
+                        //ensure usecase has a name
+                        string str2 = tb_UseCase.Text;
+                        if (str2.Length < 1)
+                            str2 = "UseCase";
 
+                        //create usecase
+                        UseCase u = new UseCase(str2, point.X - 50, point.Y - 20, Pn_useCase);
+                        uselist.Add(u);
+
+                        //create label
+                        Label label2 = new Label();
+                        label2.Name = "u" + Convert.ToString(u.Id);
+                        label2.Text = u.Name;
+
+                        //label positioning
+                        var stringFont2 = new Font("Ariel", 10);
+                        var lblwidth2 = graphics.MeasureString(label2.Text, stringFont2).Width;
+                        label2.Location = new Point(u.X - (Convert.ToInt32(lblwidth2) / 2 - 50), u.Y + 15);
+                        label2.AutoSize = true;
+
+                        //add label
+                        Pn_useCase.Controls.Add(label2);
+                        lbluselist.Add(label2);
                         break;
 
                     case 3: //draw line
@@ -108,9 +134,9 @@ namespace Use_Case_DiagramApp
                         a.Selected = true;
 
                         //change color of label
-                        foreach(Label l in lbllist)
+                        foreach (Label l in lblactorlist)
                         {
-                            if (l.Name == Convert.ToString(a.Id))
+                            if (l.Name == "a" + Convert.ToString(a.Id))
                             {
                                 l.ForeColor = Color.Red;
                             }
@@ -121,23 +147,57 @@ namespace Use_Case_DiagramApp
                         a.Selected = false;
 
                         //change color of label
-                        foreach (Label l in lbllist)
+                        foreach (Label l in lblactorlist)
                         {
-                            if (l.Name == Convert.ToString(a.Id))
+                            if (l.Name == "a" + Convert.ToString(a.Id))
                             {
                                 l.ForeColor = Color.Black;
                             }
                         }
                     }
                 }
-            }
 
-            Pn_useCase.Refresh();
-            foreach (Actor a in actlist)
-            {
-                a.Draw();
+                //use case linksboven -20 -50
+                //use case linksonder +20 +50
+                foreach (UseCase u in uselist)
+                {
+                    if ((point.X > u.X - 20 && point.Y > u.Y - 50) && (point.X < u.X + 20 && point.Y < u.Y + 50))
+                    {
+                        u.Selected = true;
+
+                        foreach (Label l in lbluselist)
+                        {
+                            if (l.Name == "u" + Convert.ToString(u.Id))
+                            {
+                                l.ForeColor = Color.Red;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        u.Selected = false;
+
+                        //change color of label
+                        foreach (Label l in lbluselist)
+                        {
+                            if (l.Name == "u" + Convert.ToString(u.Id))
+                            {
+                                l.ForeColor = Color.Black;
+                            }
+                        }
+                    }
+                }
+
+                tb_Actor_Name.Clear();
+                tb_UseCase.Clear();
+
+                //re-draw panel
+                Pn_useCase.Refresh();
+                foreach (Actor a in actlist)
+                    a.Draw();
+                foreach (UseCase u in uselist)
+                    u.Draw();
             }
-            tb_Actor_Name.Clear();
         }
 
         private void Pn_useCase_MouseMove(object sender, MouseEventArgs e)
@@ -149,7 +209,8 @@ namespace Use_Case_DiagramApp
 
         private void btn_clearAll_Click(object sender, EventArgs e)
         {
-            lbllist.Clear();
+            lblactorlist.Clear();
+            lbluselist.Clear();
             actlist.Clear();
             Pn_useCase.Controls.Clear();
             Pn_useCase.Refresh();
@@ -173,14 +234,15 @@ namespace Use_Case_DiagramApp
                 counter++;
             }
 
+            //check of er een actor is geselecteerd
             if (actorSelected && actorID != -1)
             {
                 //remove label op bepaalde positie
-                for (int i = 0; i <= lbllist.Count-1; i++)
-                    if (lbllist[i].Name == Convert.ToString(actorID))
+                for (int i = 0; i <= lblactorlist.Count - 1; i++)
+                    if (lblactorlist[i].Name == "a" + Convert.ToString(actorID))
                     {
-                        Pn_useCase.Controls.Remove(lbllist[i]);
-                        lbllist.RemoveAt(i);
+                        Pn_useCase.Controls.Remove(lblactorlist[i]);
+                        lblactorlist.RemoveAt(i);
                         i--;
                     }
 
@@ -188,10 +250,44 @@ namespace Use_Case_DiagramApp
                 actlist.RemoveAt(actorPos);
             }
 
+            //check of en welke usecase selected is
+            bool useCaseSelected = false;
+            int useCaseID = -1;
+            int useCasePos = 0;
+            counter = 0;
+            foreach (UseCase u in uselist)
+            {
+                if (u.Selected)
+                {
+                    useCaseSelected = true;
+                    useCaseID = u.Id;
+                    useCasePos = counter;
+                }
+                counter++;
+            }
+
+            //check of er een usecase is geselecteerd
+            if (useCaseSelected && useCaseID != -1)
+            {
+                //remove label op bepaalde positie
+                for (int i = 0; i <= lbluselist.Count - 1; i++)
+                    if (lbluselist[i].Name == "u" + Convert.ToString(useCaseID))
+                    {
+                        Pn_useCase.Controls.Remove(lbluselist[i]);
+                        lbluselist.RemoveAt(i);
+                        i--;
+                    }
+
+                //remove usecase
+                uselist.RemoveAt(useCasePos);
+            }
+
             //re-draw panel
             Pn_useCase.Refresh();
             foreach (Actor a in actlist)
                 a.Draw();
+            foreach (UseCase u in uselist)
+                u.Draw();
         }
     }
 }

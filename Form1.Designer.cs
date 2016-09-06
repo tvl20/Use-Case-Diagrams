@@ -43,12 +43,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.tb_UseCase = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.tb_UseCase);
             this.groupBox1.Controls.Add(this.tb_Actor_Name);
             this.groupBox1.Controls.Add(this.rbtn_line);
             this.groupBox1.Controls.Add(this.rbtn_useCase);
@@ -94,10 +96,10 @@
             this.rbtn_actor.AutoSize = true;
             this.rbtn_actor.Location = new System.Drawing.Point(6, 21);
             this.rbtn_actor.Name = "rbtn_actor";
-            this.rbtn_actor.Size = new System.Drawing.Size(74, 21);
+            this.rbtn_actor.Size = new System.Drawing.Size(62, 21);
             this.rbtn_actor.TabIndex = 0;
             this.rbtn_actor.TabStop = true;
-            this.rbtn_actor.Text = "Actor >";
+            this.rbtn_actor.Text = "Actor";
             this.rbtn_actor.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -199,6 +201,13 @@
             this.label4.TabIndex = 10;
             this.label4.Text = "Y: ";
             // 
+            // tb_UseCase
+            // 
+            this.tb_UseCase.Location = new System.Drawing.Point(111, 47);
+            this.tb_UseCase.Name = "tb_UseCase";
+            this.tb_UseCase.Size = new System.Drawing.Size(100, 22);
+            this.tb_UseCase.TabIndex = 4;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -241,5 +250,6 @@
         private System.Windows.Forms.TextBox tb_Actor_Name;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tb_UseCase;
     }
 }
