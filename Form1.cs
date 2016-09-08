@@ -52,19 +52,6 @@ namespace Use_Case_DiagramApp
                         break;
 
                     case 1: //draw actor
-                            //ensure empty space
-
-
-                        //code below needs re-write
-                        /*---------------------
-                        bool occupied = false;
-                        foreach (Actor act in actlist)
-                            if ((point.X > act.X - 32 && point.Y > act.Y - 85) && (point.X < act.X + 32 && point.Y < act.Y + 85))
-                                occupied = true;
-
-                        if (occupied)
-                            break;
-                        ---------------------*/
 
                         //ensure actor has a name
                         string str = tb_Actor_Name.Text;
@@ -109,7 +96,7 @@ namespace Use_Case_DiagramApp
                         //label positioning
                         var stringFont2 = new Font("Ariel", 10);
                         var lblwidth2 = graphics.MeasureString(label2.Text, stringFont2).Width;
-                        label2.Location = new Point(u.X - (Convert.ToInt32(lblwidth2) / 2 - 50), u.Y + 15);
+                        label2.Location = new Point(u.X - (Convert.ToInt32(lblwidth2) / 2 - label2.Text.Length * 5), u.Y + 15);
                         label2.AutoSize = true;
 
                         //add label
@@ -125,8 +112,6 @@ namespace Use_Case_DiagramApp
 
             if (rbtn_modesSelect.Checked)
             {
-                //links boven -actor {x-15 y-30}
-                //rechts onder -actor {x+15 y+35}
                 foreach (Actor a in actlist)
                 {
                     if ((point.X > a.X - 16 && point.Y > a.Y - 31) && (point.X < a.X + 16 && point.Y < a.Y + 36))
@@ -157,12 +142,26 @@ namespace Use_Case_DiagramApp
                     }
                 }
 
-                //use case linksboven -20 -50
-                //use case linksonder +20 +50
+
                 foreach (UseCase u in uselist)
                 {
-                    if ((point.X > u.X - 20 && point.Y > u.Y - 50) && (point.X < u.X + 20 && point.Y < u.Y + 50))
+                    if ((point.X > u.X && point.Y > u.Y) && (point.X < u.X + 100 && point.Y < u.Y + 40))
                     {
+                        if (u.Selected)
+                        {
+                            UseCaseDetails frm2 = new UseCaseDetails(u);
+                            frm2.ShowDialog();
+                            u.Redefine(frm2.newUseCase);
+                            foreach (Label label in lbluselist)
+                            {
+                                if (label.Name == "u" + Convert.ToString(u.Id))
+                                {
+                                    label.Text = u.Name;
+                                    break;
+                                }
+                            }
+                        }
+
                         u.Selected = true;
 
                         foreach (Label l in lbluselist)
@@ -190,21 +189,35 @@ namespace Use_Case_DiagramApp
 
                 tb_Actor_Name.Clear();
                 tb_UseCase.Clear();
-
-                //re-draw panel
-                Pn_useCase.Refresh();
-                foreach (Actor a in actlist)
-                    a.Draw();
-                foreach (UseCase u in uselist)
-                    u.Draw();
             }
+            //re-draw panel
+            Pn_useCase.Refresh();
+            foreach (Actor a in actlist)
+                a.Draw();
+            foreach (UseCase u in uselist)
+                u.Draw();
         }
 
         private void Pn_useCase_MouseMove(object sender, MouseEventArgs e)
         {
-            Point point = Pn_useCase.PointToClient(Cursor.Position);
-            label1.Text = Convert.ToString(point.X);
-            label2.Text = Convert.ToString(point.Y);
+            //set bool below to 'false' to hide mouse coordinates
+            bool debug = true;
+
+            if (!debug)
+            {
+                label1.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+                label4.Visible = false;
+                label5.Visible = false;
+            }
+            else
+            {
+                Point point = Pn_useCase.PointToClient(Cursor.Position);
+                label1.Text = Convert.ToString(point.X);
+                label2.Text = Convert.ToString(point.Y);
+            }
+            
         }
 
         private void btn_clearAll_Click(object sender, EventArgs e)

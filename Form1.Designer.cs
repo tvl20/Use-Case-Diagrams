@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tb_UseCase = new System.Windows.Forms.TextBox();
             this.tb_Actor_Name = new System.Windows.Forms.TextBox();
             this.rbtn_line = new System.Windows.Forms.RadioButton();
             this.rbtn_useCase = new System.Windows.Forms.RadioButton();
@@ -43,7 +44,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.tb_UseCase = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -61,6 +62,13 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Object";
+            // 
+            // tb_UseCase
+            // 
+            this.tb_UseCase.Location = new System.Drawing.Point(111, 47);
+            this.tb_UseCase.Name = "tb_UseCase";
+            this.tb_UseCase.Size = new System.Drawing.Size(100, 22);
+            this.tb_UseCase.TabIndex = 4;
             // 
             // tb_Actor_Name
             // 
@@ -201,18 +209,21 @@
             this.label4.TabIndex = 10;
             this.label4.Text = "Y: ";
             // 
-            // tb_UseCase
+            // label5
             // 
-            this.tb_UseCase.Location = new System.Drawing.Point(111, 47);
-            this.tb_UseCase.Name = "tb_UseCase";
-            this.tb_UseCase.Size = new System.Drawing.Size(100, 22);
-            this.tb_UseCase.TabIndex = 4;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(391, 12);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(108, 17);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Mouse Position:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(622, 433);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -251,5 +262,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tb_UseCase;
+        private System.Windows.Forms.Label label5;
     }
 }
