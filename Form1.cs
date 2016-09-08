@@ -70,7 +70,7 @@ namespace Use_Case_DiagramApp
                         //label positioning
                         var stringFont = new Font("Ariel", 10);
                         var lblwidth = graphics.MeasureString(label.Text, stringFont).Width;
-                        label.Location = new Point(a.X - (Convert.ToInt32(lblwidth) / 2), a.Y + 40);
+                        label.Location = new Point(a.X - (Convert.ToInt32(lblwidth) / 2 - label.Text.Length), a.Y + 40);
                         label.AutoSize = true;
 
                         //add label
@@ -108,6 +108,9 @@ namespace Use_Case_DiagramApp
 
                         break;
                 }
+
+                tb_Actor_Name.Text = "";
+                tb_UseCase.Text = "";
             }
 
             if (rbtn_modesSelect.Checked)
@@ -145,7 +148,7 @@ namespace Use_Case_DiagramApp
 
                 foreach (UseCase u in uselist)
                 {
-                    if ((point.X > u.X && point.Y > u.Y) && (point.X < u.X + 100 && point.Y < u.Y + 40))
+                    if ((point.X > u.X && point.Y > u.Y) && (point.X < u.X + u.width && point.Y < u.Y + 40))
                     {
                         if (u.Selected)
                         {
@@ -186,9 +189,6 @@ namespace Use_Case_DiagramApp
                         }
                     }
                 }
-
-                tb_Actor_Name.Clear();
-                tb_UseCase.Clear();
             }
             //re-draw panel
             Pn_useCase.Refresh();
