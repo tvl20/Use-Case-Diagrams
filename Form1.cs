@@ -14,6 +14,7 @@ namespace Use_Case_DiagramApp
     {
         public List<Actor> actlist = new List<Actor>();
         public List<UseCase> uselist = new List<UseCase>();
+        public List<Lijn> lijnlist = new List<Lijn>();
         public List<Label> lblactorlist = new List<Label>();
         public List<Label> lbluselist = new List<Label>();
 
@@ -105,7 +106,39 @@ namespace Use_Case_DiagramApp
                         break;
 
                     case 3: //draw line
+                        foreach(Actor actor in actlist)
+                        {
+                            if (actor.Selected)
+                            {
+                                foreach(UseCase usecase in uselist)
+                                {
+                                    if ((point.X > usecase.X && point.Y > usecase.Y) && (point.X < usecase.X + usecase.width && point.Y < usecase.Y + 40))
+                                    {
+                                        Lijn l = new Lijn(new Point(actor.X + 20, actor.Y), new Point(usecase.X - 5, usecase.Y + 20), Pn_useCase);
+                                        lijnlist.Add(l);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
 
+                        foreach (UseCase usecase in uselist)
+                        {
+                            if (usecase.Selected)
+                            {
+                                foreach (Actor actor in actlist)
+                                {
+                                    if ((point.X > actor.X - 16 && point.Y > actor.Y - 31) && (point.X < actor.X + 16 && point.Y < actor.Y + 36))
+                                    {
+                                        Lijn l = new Lijn(new Point(actor.X + 20, actor.Y), new Point(usecase.X - 5, usecase.Y + 20), Pn_useCase);
+                                        lijnlist.Add(l);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
                         break;
                 }
 
@@ -196,6 +229,8 @@ namespace Use_Case_DiagramApp
                 a.Draw();
             foreach (UseCase u in uselist)
                 u.Draw();
+            foreach (Lijn l in lijnlist)
+                l.Draw();
         }
 
         private void Pn_useCase_MouseMove(object sender, MouseEventArgs e)
@@ -243,6 +278,13 @@ namespace Use_Case_DiagramApp
                     actorSelected = true;
                     actorID = a.Id;
                     actorPos = counter;
+
+                    for (int i = 0; i <= lijnlist.Count - 1; i++)
+                        if (lijnlist[i].actPoint == new Point(a.X + 20, a.Y))
+                        {
+                            lijnlist[i].Delete();
+                            lijnlist.Remove(lijnlist[i]);
+                        }
                 }
                 counter++;
             }
@@ -275,6 +317,13 @@ namespace Use_Case_DiagramApp
                     useCaseSelected = true;
                     useCaseID = u.Id;
                     useCasePos = counter;
+
+                    for (int i = 0; i <= lijnlist.Count - 1; i++)
+                        if (lijnlist[i].usePoint == new Point(u.X - 5, u.Y + 20))
+                        { 
+                            lijnlist[i].Delete();
+                            lijnlist.Remove(lijnlist[i]);
+                        }
                 }
                 counter++;
             }
@@ -301,6 +350,8 @@ namespace Use_Case_DiagramApp
                 a.Draw();
             foreach (UseCase u in uselist)
                 u.Draw();
+            foreach (Lijn l in lijnlist)
+                l.Draw();
         }
     }
 }
