@@ -18,6 +18,18 @@ namespace Use_Case_DiagramApp
         public List<Label> lblactorlist = new List<Label>();
         public List<Label> lbluselist = new List<Label>();
 
+        public bool useCaseClicked(Point point)
+        {
+            foreach (UseCase usecase in uselist)
+            {
+                if ((point.X > usecase.X && point.Y > usecase.Y) && (point.X < usecase.X + usecase.width && point.Y < usecase.Y + 40))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -106,16 +118,32 @@ namespace Use_Case_DiagramApp
                         break;
 
                     case 3: //draw line
-                        foreach(Actor actor in actlist)
+                        foreach (Actor actor in actlist)
                         {
                             if (actor.Selected)
                             {
-                                foreach(UseCase usecase in uselist)
+                                foreach (UseCase usecase in uselist)
                                 {
                                     if ((point.X > usecase.X && point.Y > usecase.Y) && (point.X < usecase.X + usecase.width && point.Y < usecase.Y + 40))
                                     {
                                         Lijn l = new Lijn(new Point(actor.X + 20, actor.Y), new Point(usecase.X - 5, usecase.Y + 20), Pn_useCase);
-                                        lijnlist.Add(l);
+                                        bool inUse = false;
+                                        foreach (Lijn lijn in lijnlist)
+                                        {
+                                            if ((lijn.actPoint == new Point(actor.X + 20, actor.Y)) && (lijn.usePoint == new Point(usecase.X - 5, usecase.Y + 20)))
+                                            {
+                                                inUse = true;
+                                            }
+                                        }
+                                        if (inUse)
+                                        {
+                                            MessageBox.Show("Er is al een relatie");
+                                        }
+                                        else
+                                        {
+                                            lijnlist.Add(l);
+                                            usecase.AddActor(actor);
+                                        }
                                         break;
                                     }
                                 }
@@ -132,7 +160,23 @@ namespace Use_Case_DiagramApp
                                     if ((point.X > actor.X - 16 && point.Y > actor.Y - 31) && (point.X < actor.X + 16 && point.Y < actor.Y + 36))
                                     {
                                         Lijn l = new Lijn(new Point(actor.X + 20, actor.Y), new Point(usecase.X - 5, usecase.Y + 20), Pn_useCase);
-                                        lijnlist.Add(l);
+                                        bool inUse = false;
+                                        foreach (Lijn lijn in lijnlist)
+                                        {
+                                            if ((lijn.actPoint == new Point(actor.X + 20, actor.Y)) && (lijn.usePoint == new Point(usecase.X - 5, usecase.Y + 20)))
+                                            {
+                                                inUse = true;
+                                            }
+                                        }
+                                        if (inUse)
+                                        {
+                                            MessageBox.Show("Er is al een relatie");
+                                        }
+                                        else
+                                        {
+                                            lijnlist.Add(l);
+                                            usecase.AddActor(actor);
+                                        }
                                         break;
                                     }
                                 }
@@ -148,10 +192,35 @@ namespace Use_Case_DiagramApp
 
             if (rbtn_modesSelect.Checked)
             {
+                bool lineSelected = false;
                 foreach (Actor a in actlist)
                 {
                     if ((point.X > a.X - 16 && point.Y > a.Y - 31) && (point.X < a.X + 16 && point.Y < a.Y + 36))
                     {
+                        bool lineSelect = false;
+                        foreach (UseCase usecase in uselist)
+                        {
+                            if (usecase.Selected)
+                            {
+                                lineSelect = true;
+                                foreach (Lijn lijn in lijnlist)
+                                {
+                                    if ((lijn.actPoint == new Point(a.X + 20, a.Y)) && (lijn.usePoint == new Point(usecase.X - 5, usecase.Y + 20)))
+                                    {
+                                        lijn.p = Pens.Red;
+                                    }
+                                    else
+                                    {
+                                        lijn.p = Pens.Black;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        if (lineSelect)
+                            break;
+
+
                         a.Selected = true;
 
                         //change color of label
@@ -162,6 +231,31 @@ namespace Use_Case_DiagramApp
                                 l.ForeColor = Color.Red;
                             }
                         }
+                    }
+                    else if (useCaseClicked(point) && a.Selected)
+                    {
+                        foreach (Lijn lijn in lijnlist)
+                        {
+                            foreach (UseCase u in uselist)
+                                if ((lijn.actPoint == new Point(a.X + 20, a.Y)) && (lijn.usePoint == new Point(u.X - 5, u.Y + 20)))
+                                {
+                                    lijn.p = Pens.Red;
+                                    a.Selected = false;
+
+                                    foreach (Label l in lblactorlist)
+                                    {
+                                        if (l.Name == "a" + Convert.ToString(a.Id))
+                                        {
+                                            l.ForeColor = Color.Black;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    lijn.p = Pens.Black;
+                                }
+                        }
+                        lineSelected = true;
                     }
                     else
                     {
@@ -178,50 +272,50 @@ namespace Use_Case_DiagramApp
                     }
                 }
 
-
-                foreach (UseCase u in uselist)
-                {
-                    if ((point.X > u.X && point.Y > u.Y) && (point.X < u.X + u.width && point.Y < u.Y + 40))
+                if (!lineSelected)
+                    foreach (UseCase u in uselist)
                     {
-                        if (u.Selected)
+                        if ((point.X > u.X && point.Y > u.Y) && (point.X < u.X + u.width && point.Y < u.Y + 40))
                         {
-                            UseCaseDetails frm2 = new UseCaseDetails(u);
-                            frm2.ShowDialog();
-                            u.Redefine(frm2.newUseCase);
-                            foreach (Label label in lbluselist)
+                            if (u.Selected)
                             {
-                                if (label.Name == "u" + Convert.ToString(u.Id))
+                                UseCaseDetails frm2 = new UseCaseDetails(u);
+                                frm2.ShowDialog();
+                                u.Redefine(frm2.newUseCase);
+                                foreach (Label label in lbluselist)
                                 {
-                                    label.Text = u.Name;
-                                    break;
+                                    if (label.Name == "u" + Convert.ToString(u.Id))
+                                    {
+                                        label.Text = u.Name;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            u.Selected = true;
+
+                            foreach (Label l in lbluselist)
+                            {
+                                if (l.Name == "u" + Convert.ToString(u.Id))
+                                {
+                                    l.ForeColor = Color.Red;
                                 }
                             }
                         }
-
-                        u.Selected = true;
-
-                        foreach (Label l in lbluselist)
+                        else
                         {
-                            if (l.Name == "u" + Convert.ToString(u.Id))
+                            u.Selected = false;
+
+                            //change color of label
+                            foreach (Label l in lbluselist)
                             {
-                                l.ForeColor = Color.Red;
+                                if (l.Name == "u" + Convert.ToString(u.Id))
+                                {
+                                    l.ForeColor = Color.Black;
+                                }
                             }
                         }
                     }
-                    else
-                    {
-                        u.Selected = false;
-
-                        //change color of label
-                        foreach (Label l in lbluselist)
-                        {
-                            if (l.Name == "u" + Convert.ToString(u.Id))
-                            {
-                                l.ForeColor = Color.Black;
-                            }
-                        }
-                    }
-                }
             }
             //re-draw panel
             Pn_useCase.Refresh();
@@ -252,7 +346,7 @@ namespace Use_Case_DiagramApp
                 label1.Text = Convert.ToString(point.X);
                 label2.Text = Convert.ToString(point.Y);
             }
-            
+
         }
 
         private void btn_clearAll_Click(object sender, EventArgs e)
@@ -260,6 +354,8 @@ namespace Use_Case_DiagramApp
             lblactorlist.Clear();
             lbluselist.Clear();
             actlist.Clear();
+            uselist.Clear();
+            lijnlist.Clear();
             Pn_useCase.Controls.Clear();
             Pn_useCase.Refresh();
         }
@@ -285,6 +381,15 @@ namespace Use_Case_DiagramApp
                             lijnlist[i].Delete();
                             lijnlist.Remove(lijnlist[i]);
                         }
+
+                    foreach (UseCase usecase in uselist)
+                    {
+                        if (usecase.actList.Contains(a))
+                        {
+                            usecase.RemoveActor(a);
+                        }
+                    }
+
                 }
                 counter++;
             }
@@ -320,7 +425,7 @@ namespace Use_Case_DiagramApp
 
                     for (int i = 0; i <= lijnlist.Count - 1; i++)
                         if (lijnlist[i].usePoint == new Point(u.X - 5, u.Y + 20))
-                        { 
+                        {
                             lijnlist[i].Delete();
                             lijnlist.Remove(lijnlist[i]);
                         }
