@@ -455,17 +455,19 @@ namespace Use_Case_DiagramApp
                 {
                     foreach (UseCase u in uselist)
                     {
-                        if (new Point(u.X,u.Y) == lijnlist[i].usePoint)
+                        if (new Point(u.X - 5,u.Y+20) == lijnlist[i].usePoint)
                         {
                             foreach (Actor a in actlist)
                             {
-                                if (new Point(a.X,a.Y) == lijnlist[i].actPoint)
+                                if (new Point(a.X + 20,a.Y) == lijnlist[i].actPoint)
                                 {
                                     u.RemoveActor(a);
                                     lijnlist.Remove(lijnlist[i]);
                                     i--;
+                                    break;
                                 }
                             }
+                            break;
                         }
                     }
                 }
