@@ -192,10 +192,15 @@ namespace Use_Case_DiagramApp
 
             if (rbtn_modesSelect.Checked)
             {
+                foreach (Lijn L in lijnlist)
+                {
+                    L.Selected = false;
+                }
+
                 bool lineSelected = false;
                 foreach (Actor a in actlist)
                 {
-                    if ((point.X > a.X - 16 && point.Y > a.Y - 31) && (point.X < a.X + 16 && point.Y < a.Y + 36))
+                    if ((point.X > a.X - 16 && point.Y > a.Y - 31) && (point.X < a.X + 16 && point.Y < a.Y + 36)) //clicked on actor
                     {
                         bool lineSelect = false;
                         foreach (UseCase usecase in uselist)
@@ -207,11 +212,7 @@ namespace Use_Case_DiagramApp
                                 {
                                     if ((lijn.actPoint == new Point(a.X + 20, a.Y)) && (lijn.usePoint == new Point(usecase.X - 5, usecase.Y + 20)))
                                     {
-                                        lijn.p = Pens.Red;
-                                    }
-                                    else
-                                    {
-                                        lijn.p = Pens.Black;
+                                        lijn.Selected = true;
                                     }
                                 }
                                 break;
@@ -232,29 +233,28 @@ namespace Use_Case_DiagramApp
                             }
                         }
                     }
-                    else if (useCaseClicked(point) && a.Selected)
+                    else if (useCaseClicked(point) && a.Selected)  //clicked on usecase
                     {
-                        foreach (Lijn lijn in lijnlist)
-                        {
-                            foreach (UseCase u in uselist)
+                        foreach (UseCase u in uselist)
+                            foreach (Lijn lijn in lijnlist)
+                            {
                                 if ((lijn.actPoint == new Point(a.X + 20, a.Y)) && (lijn.usePoint == new Point(u.X - 5, u.Y + 20)))
                                 {
-                                    lijn.p = Pens.Red;
-                                    a.Selected = false;
-
-                                    foreach (Label l in lblactorlist)
+                                    if ((point.X > u.X && point.Y > u.Y) && (point.X < u.X + u.width && point.Y < u.Y + 40))
                                     {
-                                        if (l.Name == "a" + Convert.ToString(a.Id))
+                                        lijn.Selected = true;
+                                        a.Selected = false;
+
+                                        foreach (Label l in lblactorlist)
                                         {
-                                            l.ForeColor = Color.Black;
+                                            if (l.Name == "a" + Convert.ToString(a.Id))
+                                            {
+                                                l.ForeColor = Color.Black;
+                                            }
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    lijn.p = Pens.Black;
-                                }
-                        }
+                            }
                         lineSelected = true;
                     }
                     else
@@ -378,8 +378,8 @@ namespace Use_Case_DiagramApp
                     for (int i = 0; i <= lijnlist.Count - 1; i++)
                         if (lijnlist[i].actPoint == new Point(a.X + 20, a.Y))
                         {
-                            lijnlist[i].Delete();
                             lijnlist.Remove(lijnlist[i]);
+                            i--;
                         }
 
                     foreach (UseCase usecase in uselist)
@@ -426,8 +426,8 @@ namespace Use_Case_DiagramApp
                     for (int i = 0; i <= lijnlist.Count - 1; i++)
                         if (lijnlist[i].usePoint == new Point(u.X - 5, u.Y + 20))
                         {
-                            lijnlist[i].Delete();
                             lijnlist.Remove(lijnlist[i]);
+                            i--;
                         }
                 }
                 counter++;
@@ -447,6 +447,28 @@ namespace Use_Case_DiagramApp
 
                 //remove usecase
                 uselist.RemoveAt(useCasePos);
+            }
+
+            for (int i = 0; i <= lijnlist.Count -1; i++)
+            {
+                if (lijnlist[i].Selected)
+                {
+                    foreach (UseCase u in uselist)
+                    {
+                        if (new Point(u.X,u.Y) == lijnlist[i].usePoint)
+                        {
+                            foreach (Actor a in actlist)
+                            {
+                                if (new Point(a.X,a.Y) == lijnlist[i].actPoint)
+                                {
+                                    u.RemoveActor(a);
+                                    lijnlist.Remove(lijnlist[i]);
+                                    i--;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             //re-draw panel
